@@ -7,7 +7,7 @@ clock = pygame.time.Clock()
 FPS = 60
 BLACK = (0,0,0)
 
-image = pygame.image.load("map.png").convert()
+image = pygame.image.load("images/map_test.png").convert()
 
 running = True
 while running:
