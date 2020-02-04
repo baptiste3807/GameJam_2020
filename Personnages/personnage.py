@@ -28,25 +28,26 @@ player = Player()
 
 running = True
 while running:
-    dt = clock.tick(FPS) / 1000  # Returns milliseconds between each call to 'tick'. The convert time to seconds.
+    dt = clock.tick(FPS) / 1000  # Returns milliseconds between each call to 'tick'. The convert time to seconds. Détermine la vitesse du perso
     screen.fill(BLACK)  # Fill the screen with background color
 
     for event in pygame.event.get(): # Boucle gérant les évènements entrés par l'utilisateur (ex : déplacer la souris, appuyer sur une touche...)
         if event.type == pygame.QUIT: # Si l'évènement est de fermer la fenêtre, alors la fenêtre se ferme
             running = False
         elif event.type == pygame.KEYDOWN: # Si l'évènement est d'appuyer sur une touche du clavier, alors le rectangle (notre objet) bouge en fonction
-            if event.key == pygame.K_z:
-                player.velocity[1] = -200 * dt  # Modification de la valeur afin que le rectangle bouge (en Y)
-                player.image.fill(RED)
-            elif event.key == pygame.K_s:
-                player.velocity[1] = 200 * dt
-                player.image.fill(BLUE)
-            elif event.key == pygame.K_q:
-                player.velocity[0] = -200 * dt
-                player.image.fill(GREEN)
-            elif event.key == pygame.K_d:
-                player.velocity[0] = 200 * dt
-                player.image.fill(WHITE)
+            if player.rect.x > 0 and player.rect.y >0 or player.rect.x > 0 and player.rect.y < 728 or player.rect.x < 1024 and player.rect.y > 0 or player.rect.x < 1024 and player.rect.y < 728 :
+                if event.key == pygame.K_z:
+                    player.velocity[1] = -200 * dt  # Modification de la valeur afin que le rectangle bouge (en Y)
+                    player.image.fill(RED)
+                elif event.key == pygame.K_s:
+                    player.velocity[1] = 200 * dt
+                    player.image.fill(BLUE)
+                elif event.key == pygame.K_q:
+                    player.velocity[0] = -200 * dt
+                    player.image.fill(GREEN)
+                elif event.key == pygame.K_d:
+                    player.velocity[0] = 200 * dt
+                    player.image.fill(WHITE)
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_z or event.key == pygame.K_s:
                 player.velocity[1] = 0
