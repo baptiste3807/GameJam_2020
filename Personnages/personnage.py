@@ -1,8 +1,10 @@
 import pygame
 successes, failures = pygame.init() # Initialisation des modules de pygame
 print("{0} successes and {1} failures".format(successes, failures))
+from Objets.objets import *
 
-BLACK = (0, 0, 0) # Couleur en RVB
+# Définition de couleurs constantes en RVB
+BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -76,30 +78,39 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
     def stop_y(self):
         self.change_y = 0
 
+    #changement de l'état de santé suite a une piqûre
     def Empoisonnement(self):
-        if self.pointdevie == 3:
-            self.etat = "empoisonné"
-        elif self.pointdevie == 2:
-            self.etat = "gravement empoisonné"
-        else :
-            self.etat = "mort"
+        timer = pygame.time.Clock.get_time()
+        while pygame.time.Clock.get_time() <= timer+10:
+            if self.pointdevie == 3:
+                self.etat = "empoisonné"
+            elif self.pointdevie == 2:
+                self.etat = "gravement empoisonné"
+            else :
+                self.etat = "mort"
+        self.etat = 'sain'
 
+    #changement de l'état de santé suite au ramassage d'une caisse de soin
     def Guerison(self):
         self.etat = "sain"
 
+    #il subit une piqûre
     def EstPique(self):
         self.Empoisonnement()
         self.pointdevie -= 1
 
+    #retourne le nombre de points de vie
     def PointDeVie(self):
         return self.pointdevie
 
+    #retourne l'état de santé
     def Etat(self):
         return self.etat
 
     #def Image(self):
         #return self.image
 
+    #vitesse en fonction de l'état de santé
     def Vitesse(self):
         if self.etat == "sain":
             return 4
@@ -108,11 +119,12 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         else :
             return 1
 
+    #retourne True si le héro est mort
     def EstMort(self):
         return self.etat == "mort"
 
 
-
+#classe des murs invisibles
 class Wall(pygame.sprite.Sprite):
     #murs invisibles
     def __init__(self, width, height):
