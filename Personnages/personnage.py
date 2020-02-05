@@ -25,6 +25,7 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         self.change_y = 0
         self.pointdevie = 3
         self.etat = "sain"
+        self.level = 0
         self.inventaire = []
 
     def update(self):
@@ -32,43 +33,34 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         self.rect.x += self.change_x
 
         #detection de collisions
-        block_hit_list = pygame.sprite.spritecollide(self, active_sprite_list, False)
+        block_hit_list = pygame.sprite.spritecollide(self, self.level.wall_list, False)
         for block in block_hit_list:
-            # If we are moving right,
-            # set our right side to the left side of the item we hit
             if self.change_x > 0:
                 self.rect.right = block.rect.left
             elif self.change_x < 0:
-                # Otherwise if we are moving left, do the opposite.
                 self.rect.left = block.rect.right
-
-        object_hit_list = pygame.sprite.spritecollide(self, active_props_list, False)
-        for block in object_hit_list:
-            # If we are moving right,
-            # set our right side to the left side of the item we hit
-            if self.change_x > 0 or self.change_x < 0:
-                block.image.set_alpha(0)
 
         #déplacement haut bas
         self.rect.y += self.change_y
 
         # detection de collisions
-        block_hit_list = pygame.sprite.spritecollide(self, active_sprite_list, False)
+        block_hit_list = pygame.sprite.spritecollide(self, self.level.wall_list, False)
         for block in block_hit_list:
-            # If we are moving right,
-            # set our right side to the left side of the item we hit
             if self.change_y > 0:
                 self.rect.bottom = block.rect.top
             elif self.change_y < 0:
-                # Otherwise if we are moving left, do the opposite.
                 self.rect.top = block.rect.bottom
 
-        object_hit_list = pygame.sprite.spritecollide(self, active_props_list, False)
+        #ramassage objets
+        object_hit_list = pygame.sprite.spritecollide(self, self.level.props_list, False)
         for block in object_hit_list:
-            # If we are moving right,
-            # set our right side to the left side of the item we hit
-            if self.change_y > 0 or self.change_y < 0:
-                block.image.set_alpha(0)
+            if self.change_x > 0 or self.change_x < 0 or self.change_y > 0 or self.change_y < 0:
+                if len(self.inventaire) < 2:
+                    self.Ramasse(block)
+                    self.contenu()
+                    block.rect.x = 10000
+                    block.rect.y = 10000
+
 
     #mouvement vers la gauche
     def go_left(self):
@@ -123,9 +115,6 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
     def Etat(self):
         return self.etat
 
-    #def Image(self):
-        #return self.image
-
     #vitesse en fonction de l'état de santé
     def Vitesse(self):
         if self.etat == "sain":
@@ -139,15 +128,21 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
     def EstMort(self):
         return self.etat == "mort"
 
+    #permet de ramasser un objet passé en paramètres
     def Ramasse(self, object):
-        self.inventaire.append(0,object)
+        self.inventaire.insert(0, object)
         if len(self.inventaire) > 2:
-            del self.inventaire[2]
+            self.inventaire.pop(2)
+
+    #affiche tout ce que l'inventaire du joueur contient
+    def contenu(self):
+        print("L'inventaire contient : \n")
+        for obj in self.inventaire:
+            print(obj.nom)
 
 
 #classe des murs invisibles
 class Wall(pygame.sprite.Sprite):
-    #murs invisibles
     def __init__(self, width, height):
         super().__init__()
 
@@ -155,102 +150,193 @@ class Wall(pygame.sprite.Sprite):
         self.image.fill(RED)
         self.rect = self.image.get_rect()
 
+#super classe des niveaux
+class Level(object):
 
-# Définition de la résolution de l'écran
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH))
+    def __init__(self, player):
 
-#changement du nom de la fenetre
-pygame.display.set_caption("Air bee 'n bees")
+        self.wall_list = pygame.sprite.Group()
+        self.props_list = pygame.sprite.Group()
+        self.player = player
 
-# Création d'une horloge pour vérifier que les programmes sont mis à jour à une vitesse fixe
-clock = pygame.time.Clock()
+    # Met a jour tous les composants du niveau
+    def update(self):
 
-# Frames per second.
-FPS = 60
+        self.wall_list.update()
+        self.props_list.update()
 
-#création du joueur
-player = Player()
+    def draw(self, screen):
 
-#placement du joueur
-player.rect.x = 20
-player.rect.y = 100
+        # dessine toutes les listes de sprites
+        self.wall_list.draw(screen)
+        self.props_list.draw(screen)
 
-#variable de la boucle du jeu
-running = True
 
-#création d'un bloc
-wall = Wall(150,400)
-wall.rect.x = 225
-wall.rect.y = 310
-wall.image.set_alpha(0)
+class Level_01(Level):
 
-wall2 = Wall(125,275)
-wall2.rect.x = 250
-wall2.rect.y = 0
-wall2.image.set_alpha(0)
+    def __init__(self, player):
 
-#liste de sprites (murs)
-active_sprite_list = pygame.sprite.Group()
-active_sprite_list.add(wall)
-active_sprite_list.add(wall2)
+        # Appelle le constructeur du parent
+        Level.__init__(self, player)
 
-#création d'un ventilateur
-ventilo = ventilateur()
-ventilo.rect.x = 600
-ventilo.rect.y = 300
+        player.rect.x = 300
+        player.rect.y = 300
 
-#liste des objets ramassables
-active_props_list = pygame.sprite.Group()
-active_props_list.add_internal(ventilo)
+        # liste contenant width, height, x, and y des murs
+        level = [[100, 330, 400, 0],
+                 [100, 330, 400, 398],
+                 [50, 728, 0, 0],
+                 [735, 50, 0, 0],
+                 [244, 50, 780, 0],
+                 [1024, 50, 0, 678],
+                 [50, 728, 974, 0],
+                 ]
 
-#chargement de l'image du fond
-image = pygame.image.load("map_test.png").convert()
+        # parcours la liste ci-dessus et ajoute les murs
+        for wall in level:
+            block = Wall(wall[0], wall[1])
+            block.rect.x = wall[2]
+            block.rect.y = wall[3]
+            block.player = self.player
+            self.wall_list.add(block)
 
-#boucle du jeu
-while running:
-    dt = clock.tick(FPS) / 1000  # Returns milliseconds between each call to 'tick'. The convert time to seconds. Détermine la vitesse du perso
-    screen.fill(BLACK)  # Fill the screen with background color
+        ventilo = ventilateur()
+        ventilo.rect.x = 600
+        ventilo.rect.y = 300
 
-    for event in pygame.event.get(): # Boucle gérant les évènements entrés par l'utilisateur (ex : déplacer la souris, appuyer sur une touche...)
-        if event.type == pygame.QUIT: # Si l'évènement est de fermer la fenêtre, alors la fenêtre se ferme
-            running = False
-        elif event.type == pygame.KEYDOWN: # Si l'évènement est d'appuyer sur une touche du clavier, alors le rectangle (notre objet) bouge en fonction
-            if event.key == pygame.K_z:
-                player.go_up()
-            elif event.key == pygame.K_s:
-                player.go_down()
-            elif event.key == pygame.K_q:
-                player.go_left()
-            elif event.key == pygame.K_d:
-                player.go_right()
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_z or event.key == pygame.K_s:
-                player.stop_y()
-            elif event.key == pygame.K_q or event.key == pygame.K_d:
-                player.stop_x()
+        miel = Miel()
+        miel.rect.x = 800
+        miel.rect.y = 610
 
-    #mise a jour du joueur
-    player.update()
+        self.props_list.add_internal(ventilo)
+        self.props_list.add_internal(miel)
 
-    #détection sortie horizontale
-    if player.rect.right > SCREEN_WIDTH:
-        player.rect.right = SCREEN_WIDTH
-    elif player.rect.left < 0:
-        player.rect.left = 0
+class Level_02(Level):
 
-    #détection sortie verticale
-    if player.rect.y + 32 > SCREEN_HEIGTH:
-        player.rect.y = SCREEN_HEIGTH - 32
-    elif player.rect.y < 0:
-        player.rect.y = 0
+    def __init__(self, player):
 
-    screen.blit(image, (0, 0))
-    #pygame.display.flip()
-    screen.blit(player.image, player.rect) # L'ordinateur dessine l'écran
-    screen.blit(wall.image, wall.rect)
-    screen.blit(wall2.image, wall2.rect)
-    screen.blit(ventilo.image, ventilo.rect)
-    pygame.display.update()  # Or pygame.display.flip(), l'ordinateur met à jour l'écran pour l'utilisateur
+        # Appelle le constructeur du parent
+        Level.__init__(self, player)
 
-print("Exited the game loop. Game will quit...")
-quit()
+        player.rect.x = 300
+        player.rect.y = 300
+
+        # liste contenant width, height, x, and y des murs
+        level = [[100, 330, 400, 0],
+                 [100, 330, 400, 398],
+                 [50, 728, 100, 0],
+                 [735, 50, 0, 0],
+                 [244, 50, 780, 0],
+                 [1024, 50, 0, 678],
+                 [50, 728, 974, 0],
+                 ]
+
+        # parcours la liste ci-dessus et ajoute les murs
+        for wall in level:
+            block = Wall(wall[0], wall[1])
+            block.rect.x = wall[2]
+            block.rect.y = wall[3]
+            block.player = self.player
+            self.wall_list.add(block)
+
+        ventilo = ventilateur()
+        ventilo.rect.x = 600
+        ventilo.rect.y = 300
+
+        miel = Miel()
+        miel.rect.x = 800
+        miel.rect.y = 610
+
+        self.props_list.add_internal(ventilo)
+        self.props_list.add_internal(miel)
+
+
+def main():
+    # Définition de la résolution de l'écran
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH))
+
+    #changement du nom de la fenetre
+    pygame.display.set_caption("Air bee 'n bees")
+
+    # Création d'une horloge pour vérifier que les programmes sont mis à jour à une vitesse fixe
+    clock = pygame.time.Clock()
+
+    # images par seconde
+    FPS = 60
+
+    #création du joueur
+    player = Player()
+
+    #Liste des niveaux
+    level_list = []
+    level_list.append(Level_01(player))
+    level_list.append(Level_02(player))
+
+    # choisit le niveau en cours
+    level_courant = 0
+    current_level = level_list[level_courant]
+
+    active_sprite_list = pygame.sprite.Group()
+    player.level = current_level
+
+    active_sprite_list.add(player)
+
+    #variable de la boucle du jeu
+    running = True
+
+    #boucle du jeu
+    while running:
+        dt = clock.tick(FPS) / 1000  # Retourne le nombre de millisecondes entre chaque "tick" de l'horloge
+        screen.fill(BLACK)  # remplis l'écran avec une couleur de fond
+
+        for event in pygame.event.get(): # Boucle gérant les évènements entrés par l'utilisateur (ex : déplacer la souris, appuyer sur une touche...)
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN: # Si l'évènement est d'appuyer sur une touche du clavier, alors le rectangle (notre objet) bouge en fonction
+                if event.key == pygame.K_z:
+                    player.go_up()
+                elif event.key == pygame.K_s:
+                    player.go_down()
+                elif event.key == pygame.K_q:
+                    player.go_left()
+                elif event.key == pygame.K_d:
+                    player.go_right()
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_z or event.key == pygame.K_s:
+                    player.stop_y()
+                elif event.key == pygame.K_q or event.key == pygame.K_d:
+                    player.stop_x()
+
+        #mise a jour du joueur
+        player.update()
+
+        #détection sortie horizontale
+        if player.rect.right > SCREEN_WIDTH:
+            player.rect.right = SCREEN_WIDTH
+        elif player.rect.left < 0:
+            player.rect.left = 0
+
+        #détection sortie verticale
+        if player.rect.y + 32 > SCREEN_HEIGTH:
+            player.rect.y = SCREEN_HEIGTH - 32
+        elif player.rect.y < 0:
+            player.rect.y = 0
+
+        #détection fin de niveau
+        if player.rect.y == 0:
+            level_courant += 1
+            current_level = level_list[level_courant]
+            player.rect.x = 300
+            player.rect.y = 300
+            active_sprite_list = pygame.sprite.Group()
+            player.level = current_level
+
+        screen.blit(player.image, player.rect)
+        current_level.draw(screen)
+        pygame.display.update()  #l'ordinateur met à jour l'écran pour l'utilisateur
+
+    print("Exited the game loop. Game will quit...")
+    quit()
+
+if __name__ == '__main__':
+    main()

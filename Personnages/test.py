@@ -197,7 +197,7 @@ def main():
     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
 
-    pygame.display.set_caption("Platformer Jumper")
+    pygame.display.set_caption("Cloé la pute")
 
     # Create the player
     player = Player()

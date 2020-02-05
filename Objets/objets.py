@@ -13,6 +13,7 @@ class souffle(pygame.sprite.Sprite):
 
 class cahier(pygame.sprite.Sprite):
     def __init__(self):
+        self.nom = "cahier"
         self.image = pygame.Surface([10,10])
         #self.image.fill(GREEN)
         self.rect = self.image.get_rect()
@@ -21,6 +22,7 @@ class cahier(pygame.sprite.Sprite):
 
 class eventail(pygame.sprite.Sprite):
     def __init__(self):
+        self.nom = "eventail"
         self.image = pygame.Surface([10,10])
         #self.image.fill(GREEN)
         self.rect = self.image.get_rect()
@@ -29,6 +31,7 @@ class eventail(pygame.sprite.Sprite):
 
 class ventilateur(pygame.sprite.Sprite):
     def __init__(self):
+        self.nom = "ventilateur"
         self.image = pygame.Surface((10,10))
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
@@ -37,6 +40,7 @@ class ventilateur(pygame.sprite.Sprite):
 
 class Miel(pygame.sprite.Sprite):
     def __init__(self):
+        self.nom = "miel"
         self.image = pygame.Surface((10,10))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
