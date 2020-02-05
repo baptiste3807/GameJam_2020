@@ -40,6 +40,13 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
                 # Otherwise if we are moving left, do the opposite.
                 self.rect.left = block.rect.right
 
+        object_hit_list = pygame.sprite.spritecollide(self, active_props_list, False)
+        for block in object_hit_list:
+            # If we are moving right,
+            # set our right side to the left side of the item we hit
+            if self.change_x > 0 or self.change_x < 0:
+                block.image.set_alpha(0)
+
         #déplacement haut bas
         self.rect.y += self.change_y
 
@@ -53,6 +60,13 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
             elif self.change_y < 0:
                 # Otherwise if we are moving left, do the opposite.
                 self.rect.top = block.rect.bottom
+
+        object_hit_list = pygame.sprite.spritecollide(self, active_props_list, False)
+        for block in object_hit_list:
+            # If we are moving right,
+            # set our right side to the left side of the item we hit
+            if self.change_y > 0 or self.change_y < 0:
+                block.image.set_alpha(0)
 
     #mouvement vers la gauche
     def go_left(self):
@@ -134,6 +148,14 @@ class Wall(pygame.sprite.Sprite):
         self.image.fill(RED)
         self.rect = self.image.get_rect()
 
+class ventilateur(pygame.sprite.Sprite):
+    def __init__(self):
+        self.image = pygame.Surface((10,10))
+        self.image.fill(GREEN)
+        self.rect = self.image.get_rect()
+        self.nb_util = 1
+        self.nb_cases = 4
+
 
 # Définition de la résolution de l'écran
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH))
@@ -170,6 +192,15 @@ wall2.rect.y = 0
 active_sprite_list = pygame.sprite.Group()
 active_sprite_list.add(wall)
 active_sprite_list.add(wall2)
+
+#création d'un ventilateur
+ventilo = ventilateur()
+ventilo.rect.x = 800
+ventilo.rect.y = 400
+
+#liste des objets ramassables
+active_props_list = pygame.sprite.Group()
+active_props_list.add_internal(ventilo)
 
 #boucle du jeu
 while running:
@@ -213,7 +244,8 @@ while running:
     screen.blit(player.image, player.rect) # L'ordinateur dessine l'écran
     screen.blit(wall.image, wall.rect)
     screen.blit(wall2.image, wall2.rect)
+    screen.blit(ventilo.image, ventilo.rect)
     pygame.display.update()  # Or pygame.display.flip(), l'ordinateur met à jour l'écran pour l'utilisateur
 
 print("Exited the game loop. Game will quit...")
-quit()  # Not actually necessary since the script will exit anyway.
+quit()
