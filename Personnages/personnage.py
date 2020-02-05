@@ -25,6 +25,7 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         self.change_y = 0
         self.pointdevie = 3
         self.etat = "sain"
+        self.inventaire = []
 
     def update(self):
         #déplacement droite/gauche
@@ -137,6 +138,11 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
     #retourne True si le héro est mort
     def EstMort(self):
         return self.etat == "mort"
+
+    def Ramasse(self, object):
+        self.inventaire.append(0,object)
+        if len(self.inventaire) > 2:
+            del self.inventaire[2]
 
 
 #classe des murs invisibles
