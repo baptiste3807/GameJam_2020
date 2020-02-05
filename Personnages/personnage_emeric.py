@@ -25,7 +25,6 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         self.change_y = 0
         self.pointdevie = 3
         self.etat = "sain"
-        self.levelcourant = None
 
     def update(self):
         #déplacement droite/gauche
@@ -54,13 +53,6 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         for block in object_hit_list:
             if self.change_x > 0 or self.change_x < 0 or self.change_y > 0 or self.change_y < 0:
                 block.image.set_alpha(0)
-
-        finniv_hit_list = pygame.sprite.spritecollide(self, self.level.finniv_list, False)
-        for block in finniv_hit_list:
-            if self.change_y < 0 or self.change_y > 0 or self.change_x < 0 or self.change_x > 0:
-                self.levelcourant += 1
-                current_level = level_list[player.levelcourant]
-                print(player.levelcourant)
 
     #mouvement vers la gauche
     def go_left(self):
@@ -142,22 +134,12 @@ class Wall(pygame.sprite.Sprite):
         self.image.fill(RED)
         self.rect = self.image.get_rect()
 
-class FinNiv(pygame.sprite.Sprite):
-    def __init__(self, width, height, x, y):
-        super().__init__()
-
-        self.image = pygame.Surface([width, height])
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
 class Level(object):
 
     def __init__(self, player):
 
         self.wall_list = pygame.sprite.Group()
         self.props_list = pygame.sprite.Group()
-        self.finniv_list = pygame.sprite.Group()
         self.player = player
 
     # Update everythign on this level
@@ -165,14 +147,12 @@ class Level(object):
 
         self.wall_list.update()
         self.props_list.update()
-        self.finniv_list.update()
 
     def draw(self, screen):
 
         # Draw all the sprite lists that we have
         self.wall_list.draw(screen)
         self.props_list.draw(screen)
-        self.finniv_list.draw(screen)
 
 # Create platforms for the level
 class Level_01(Level):
@@ -194,48 +174,6 @@ class Level_01(Level):
                  [1024, 50, 0, 678],
                  [50, 728, 974, 0],
                  ]
-
-        finNiv = FinNiv(45, 0, 735, 0)
-
-        self.finniv_list.add(finNiv)
-
-        # Go through the array above and add platforms
-        for wall in level:
-            block = Wall(wall[0], wall[1])
-            block.rect.x = wall[2]
-            block.rect.y = wall[3]
-            block.player = self.player
-            self.wall_list.add(block)
-
-        ventilo = ventilateur()
-        ventilo.rect.x = 600
-        ventilo.rect.y = 300
-
-        self.props_list.add_internal(ventilo)
-
-class Level_02(Level):
-
-    def __init__(self, player):
-
-        # Call the parent constructor
-        Level.__init__(self, player)
-
-        player.rect.x = 300
-        player.rect.y = 300
-
-        # Array with width, height, x, and y of platform
-        level = [[100, 330, 400, 0],
-                 [100, 330, 400, 398],
-                 [50, 728, 100, 0],
-                 [735, 50, 0, 0],
-                 [244, 50, 780, 0],
-                 [1024, 50, 0, 678],
-                 [50, 728, 974, 0],
-                 ]
-
-        finNiv = FinNiv(45, 0, 735, 0)
-
-        self.finniv_list.add(finNiv)
 
         # Go through the array above and add platforms
         for wall in level:
@@ -266,13 +204,13 @@ FPS = 60
 #création du joueur
 player = Player()
 
+#Liste des niveaux
 level_list = []
 level_list.append(Level_01(player))
-level_list.append(Level_02(player))
 
 # Set the current level
-
-
+level_courant = 0
+current_level = level_list[level_courant]
 
 active_sprite_list = pygame.sprite.Group()
 player.level = current_level
