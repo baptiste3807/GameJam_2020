@@ -25,6 +25,7 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         self.change_y = 0
         self.pointdevie = 3
         self.etat = "sain"
+        self.level = 0
 
     def update(self):
         #déplacement droite/gauche
@@ -189,6 +190,42 @@ class Level_01(Level):
 
         self.props_list.add_internal(ventilo)
 
+class Level_02(Level):
+
+    def __init__(self, player):
+
+        # Call the parent constructor
+        Level.__init__(self, player)
+
+        player.rect.x = 300
+        player.rect.y = 300
+
+        # Array with width, height, x, and y of platform
+        level = [[100, 330, 400, 0],
+                 [100, 330, 400, 398],
+                 [50, 728, 100, 0],
+                 [735, 50, 0, 0],
+                 [244, 50, 780, 0],
+                 [1024, 50, 0, 678],
+                 [50, 728, 974, 0],
+                 ]
+
+        # Go through the array above and add platforms
+        for wall in level:
+            block = Wall(wall[0], wall[1])
+            block.rect.x = wall[2]
+            block.rect.y = wall[3]
+            block.player = self.player
+            self.wall_list.add(block)
+
+        ventilo = ventilateur()
+        ventilo.rect.x = 600
+        ventilo.rect.y = 300
+
+        self.props_list.add_internal(ventilo)
+
+
+
 # Définition de la résolution de l'écran
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH))
 
@@ -207,6 +244,7 @@ player = Player()
 #Liste des niveaux
 level_list = []
 level_list.append(Level_01(player))
+level_list.append(Level_02(player))
 
 # Set the current level
 level_courant = 0
@@ -258,10 +296,18 @@ while running:
     elif player.rect.y < 0:
         player.rect.y = 0
 
+    if player.rect.y == 0:
+        level_courant += 1
+        current_level = level_list[level_courant]
+        player.rect.x = 300
+        player.rect.y = 300
+        active_sprite_list = pygame.sprite.Group()
+        player.level = current_level
+
     #pygame.display.flip()
     screen.blit(player.image, player.rect) # L'ordinateur dessine l'écran
     current_level.draw(screen)
-    active_sprite_list.draw(screen)
+    #active_sprite_list.draw(screen)
     pygame.display.update()  # Or pygame.display.flip(), l'ordinateur met à jour l'écran pour l'utilisateur
 
 print("Exited the game loop. Game will quit...")
