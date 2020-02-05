@@ -14,6 +14,7 @@ BLUE = (0, 0, 255)
 SCREEN_WIDTH = 1024
 SCREEN_HEIGTH = 728
 
+#classe du joueur
 class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les objets plus organisés
     def __init__(self):
         super().__init__()
@@ -148,14 +149,6 @@ class Wall(pygame.sprite.Sprite):
         self.image.fill(RED)
         self.rect = self.image.get_rect()
 
-class ventilateur(pygame.sprite.Sprite):
-    def __init__(self):
-        self.image = pygame.Surface((10,10))
-        self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
-        self.nb_util = 1
-        self.nb_cases = 4
-
 
 # Définition de la résolution de l'écran
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH))
@@ -173,20 +166,22 @@ FPS = 60
 player = Player()
 
 #placement du joueur
-player.rect.x = SCREEN_HEIGTH/2
-player.rect.y = SCREEN_WIDTH/2
+player.rect.x = 20
+player.rect.y = 100
 
 #variable de la boucle du jeu
 running = True
 
 #création d'un bloc
-wall = Wall(100,100)
-wall.rect.x = 200
-wall.rect.y = 300
+wall = Wall(150,400)
+wall.rect.x = 225
+wall.rect.y = 310
+wall.image.set_alpha(0)
 
-wall2 = Wall(5,150)
-wall2.rect.x = 0
+wall2 = Wall(125,275)
+wall2.rect.x = 250
 wall2.rect.y = 0
+wall2.image.set_alpha(0)
 
 #liste de sprites (murs)
 active_sprite_list = pygame.sprite.Group()
@@ -195,12 +190,15 @@ active_sprite_list.add(wall2)
 
 #création d'un ventilateur
 ventilo = ventilateur()
-ventilo.rect.x = 800
-ventilo.rect.y = 400
+ventilo.rect.x = 600
+ventilo.rect.y = 300
 
 #liste des objets ramassables
 active_props_list = pygame.sprite.Group()
 active_props_list.add_internal(ventilo)
+
+#chargement de l'image du fond
+image = pygame.image.load("map_test.png").convert()
 
 #boucle du jeu
 while running:
@@ -240,7 +238,8 @@ while running:
     elif player.rect.y < 0:
         player.rect.y = 0
 
-
+    screen.blit(image, (0, 0))
+    #pygame.display.flip()
     screen.blit(player.image, player.rect) # L'ordinateur dessine l'écran
     screen.blit(wall.image, wall.rect)
     screen.blit(wall2.image, wall2.rect)
