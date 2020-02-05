@@ -108,9 +108,6 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
     def Etat(self):
         return self.etat
 
-    #def Image(self):
-        #return self.image
-
     #vitesse en fonction de l'état de santé
     def Vitesse(self):
         if self.etat == "sain":
@@ -127,7 +124,6 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
 
 #classe des murs invisibles
 class Wall(pygame.sprite.Sprite):
-    #murs invisibles
     def __init__(self, width, height):
         super().__init__()
 
@@ -135,6 +131,7 @@ class Wall(pygame.sprite.Sprite):
         self.image.fill(RED)
         self.rect = self.image.get_rect()
 
+#super classe des niveaux
 class Level(object):
 
     def __init__(self, player):
@@ -143,7 +140,7 @@ class Level(object):
         self.props_list = pygame.sprite.Group()
         self.player = player
 
-    # Update everythign on this level
+    # Met a jour tous les composants du niveau
     def update(self):
 
         self.wall_list.update()
@@ -151,22 +148,22 @@ class Level(object):
 
     def draw(self, screen):
 
-        # Draw all the sprite lists that we have
+        # dessine toutes les listes de sprites
         self.wall_list.draw(screen)
         self.props_list.draw(screen)
 
-# Create platforms for the level
+
 class Level_01(Level):
 
     def __init__(self, player):
 
-        # Call the parent constructor
+        # Appelle le constructeur du parent
         Level.__init__(self, player)
 
         player.rect.x = 300
         player.rect.y = 300
 
-        # Array with width, height, x, and y of platform
+        # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
                  [100, 330, 400, 398],
                  [50, 728, 0, 0],
@@ -176,7 +173,7 @@ class Level_01(Level):
                  [50, 728, 974, 0],
                  ]
 
-        # Go through the array above and add platforms
+        # parcours la liste ci-dessus et ajoute les murs
         for wall in level:
             block = Wall(wall[0], wall[1])
             block.rect.x = wall[2]
@@ -194,13 +191,13 @@ class Level_02(Level):
 
     def __init__(self, player):
 
-        # Call the parent constructor
+        # Appelle le constructeur du parent
         Level.__init__(self, player)
 
         player.rect.x = 300
         player.rect.y = 300
 
-        # Array with width, height, x, and y of platform
+        # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
                  [100, 330, 400, 398],
                  [50, 728, 100, 0],
@@ -210,7 +207,7 @@ class Level_02(Level):
                  [50, 728, 974, 0],
                  ]
 
-        # Go through the array above and add platforms
+        # parcours la liste ci-dessus et ajoute les murs
         for wall in level:
             block = Wall(wall[0], wall[1])
             block.rect.x = wall[2]
@@ -225,90 +222,92 @@ class Level_02(Level):
         self.props_list.add_internal(ventilo)
 
 
+def main():
+    # Définition de la résolution de l'écran
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH))
 
-# Définition de la résolution de l'écran
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH))
+    #changement du nom de la fenetre
+    pygame.display.set_caption("Air bee 'n bees")
 
-#changement du nom de la fenetre
-pygame.display.set_caption("Air bee 'n bees")
+    # Création d'une horloge pour vérifier que les programmes sont mis à jour à une vitesse fixe
+    clock = pygame.time.Clock()
 
-# Création d'une horloge pour vérifier que les programmes sont mis à jour à une vitesse fixe
-clock = pygame.time.Clock()
+    # images par seconde
+    FPS = 60
 
-# Frames per second.
-FPS = 60
+    #création du joueur
+    player = Player()
 
-#création du joueur
-player = Player()
+    #Liste des niveaux
+    level_list = []
+    level_list.append(Level_01(player))
+    level_list.append(Level_02(player))
 
-#Liste des niveaux
-level_list = []
-level_list.append(Level_01(player))
-level_list.append(Level_02(player))
+    # choisit le niveau en cours
+    level_courant = 0
+    current_level = level_list[level_courant]
 
-# Set the current level
-level_courant = 0
-current_level = level_list[level_courant]
+    active_sprite_list = pygame.sprite.Group()
+    player.level = current_level
 
-active_sprite_list = pygame.sprite.Group()
-player.level = current_level
+    active_sprite_list.add(player)
 
-active_sprite_list.add(player)
+    #variable de la boucle du jeu
+    running = True
 
-#variable de la boucle du jeu
-running = True
+    #boucle du jeu
+    while running:
+        dt = clock.tick(FPS) / 1000  # Retourne le nombre de millisecondes entre chaque "tick" de l'horloge
+        screen.fill(BLACK)  # remplis l'écran avec une couleur de fond
 
-#boucle du jeu
-while running:
-    dt = clock.tick(FPS) / 1000  # Returns milliseconds between each call to 'tick'. The convert time to seconds. Détermine la vitesse du perso
-    screen.fill(BLACK)  # Fill the screen with background color
+        for event in pygame.event.get(): # Boucle gérant les évènements entrés par l'utilisateur (ex : déplacer la souris, appuyer sur une touche...)
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN: # Si l'évènement est d'appuyer sur une touche du clavier, alors le rectangle (notre objet) bouge en fonction
+                if event.key == pygame.K_z:
+                    player.go_up()
+                elif event.key == pygame.K_s:
+                    player.go_down()
+                elif event.key == pygame.K_q:
+                    player.go_left()
+                elif event.key == pygame.K_d:
+                    player.go_right()
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_z or event.key == pygame.K_s:
+                    player.stop_y()
+                elif event.key == pygame.K_q or event.key == pygame.K_d:
+                    player.stop_x()
 
-    for event in pygame.event.get(): # Boucle gérant les évènements entrés par l'utilisateur (ex : déplacer la souris, appuyer sur une touche...)
-        if event.type == pygame.QUIT: # Si l'évènement est de fermer la fenêtre, alors la fenêtre se ferme
-            running = False
-        elif event.type == pygame.KEYDOWN: # Si l'évènement est d'appuyer sur une touche du clavier, alors le rectangle (notre objet) bouge en fonction
-            if event.key == pygame.K_z:
-                player.go_up()
-            elif event.key == pygame.K_s:
-                player.go_down()
-            elif event.key == pygame.K_q:
-                player.go_left()
-            elif event.key == pygame.K_d:
-                player.go_right()
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_z or event.key == pygame.K_s:
-                player.stop_y()
-            elif event.key == pygame.K_q or event.key == pygame.K_d:
-                player.stop_x()
+        #mise a jour du joueur
+        player.update()
 
-    #mise a jour du joueur
-    player.update()
+        #détection sortie horizontale
+        if player.rect.right > SCREEN_WIDTH:
+            player.rect.right = SCREEN_WIDTH
+        elif player.rect.left < 0:
+            player.rect.left = 0
 
-    #détection sortie horizontale
-    if player.rect.right > SCREEN_WIDTH:
-        player.rect.right = SCREEN_WIDTH
-    elif player.rect.left < 0:
-        player.rect.left = 0
+        #détection sortie verticale
+        if player.rect.y + 32 > SCREEN_HEIGTH:
+            player.rect.y = SCREEN_HEIGTH - 32
+        elif player.rect.y < 0:
+            player.rect.y = 0
 
-    #détection sortie verticale
-    if player.rect.y + 32 > SCREEN_HEIGTH:
-        player.rect.y = SCREEN_HEIGTH - 32
-    elif player.rect.y < 0:
-        player.rect.y = 0
+        #détection fin de niveau
+        if player.rect.y == 0:
+            level_courant += 1
+            current_level = level_list[level_courant]
+            player.rect.x = 300
+            player.rect.y = 300
+            active_sprite_list = pygame.sprite.Group()
+            player.level = current_level
 
-    if player.rect.y == 0:
-        level_courant += 1
-        current_level = level_list[level_courant]
-        player.rect.x = 300
-        player.rect.y = 300
-        active_sprite_list = pygame.sprite.Group()
-        player.level = current_level
+        screen.blit(player.image, player.rect)
+        current_level.draw(screen)
+        pygame.display.update()  #l'ordinateur met à jour l'écran pour l'utilisateur
 
-    #pygame.display.flip()
-    screen.blit(player.image, player.rect) # L'ordinateur dessine l'écran
-    current_level.draw(screen)
-    #active_sprite_list.draw(screen)
-    pygame.display.update()  # Or pygame.display.flip(), l'ordinateur met à jour l'écran pour l'utilisateur
+    print("Exited the game loop. Game will quit...")
+    quit()
 
-print("Exited the game loop. Game will quit...")
-quit()
+if __name__ == '__main__':
+    main()
