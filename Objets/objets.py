@@ -1,6 +1,7 @@
 import pygame
 
 GREEN = (0, 255, 0)
+YELLOW = (255, 255, 0)
 
 class souffle(pygame.sprite.Sprite):
     def __init__(self):
@@ -33,3 +34,9 @@ class ventilateur(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.nb_util = 1
         self.nb_cases = 4
+
+class Miel(pygame.sprite.Sprite):
+    def __init__(self):
+        self.image = pygame.Surface((10,10))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()

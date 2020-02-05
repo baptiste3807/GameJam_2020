@@ -185,7 +185,12 @@ class Level_01(Level):
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
+        miel = Miel()
+        miel.rect.x = 800
+        miel.rect.y = 610
+
         self.props_list.add_internal(ventilo)
+        self.props_list.add_internal(miel)
 
 class Level_02(Level):
 
@@ -219,7 +224,12 @@ class Level_02(Level):
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
+        miel = Miel()
+        miel.rect.x = 800
+        miel.rect.y = 610
+
         self.props_list.add_internal(ventilo)
+        self.props_list.add_internal(miel)
 
 
 def main():
