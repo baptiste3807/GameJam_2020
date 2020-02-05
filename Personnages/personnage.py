@@ -25,7 +25,8 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         self.change_y = 0
         self.pointdevie = 3
         self.etat = "sain"
-        self.level = 0
+        self.direction = "droite"
+        self.liste_souffle = pygame.sprite.Group()
         self.inventaire = []
 
     def update(self):
@@ -65,18 +66,22 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
     #mouvement vers la gauche
     def go_left(self):
         self.change_x = -self.Vitesse()
+        self.direction = "gauche"
 
     #mouvement vers la droite
     def go_right(self):
         self.change_x = self.Vitesse()
+        self.direction = "droite"
 
     #mouvement vers le haut
     def go_up(self):
         self.change_y = -self.Vitesse()
+        self.direction = "haut"
 
     #mouvement vers le bas
     def go_down(self):
         self.change_y = self.Vitesse()
+        self.direction = "bas"
 
     #arret mouvement droite/gauche
     def stop_x(self):
@@ -85,6 +90,10 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
     #arret mouvement haut/bas
     def stop_y(self):
         self.change_y = 0
+
+    # utilisation de l'air
+    def souffle(self):
+        self.liste_souffle.add_internal(Souffle(self))
 
     #changement de l'état de santé suite a une piqûre
     def Empoisonnement(self):
@@ -288,6 +297,9 @@ def main():
     while running:
         dt = clock.tick(FPS) / 1000  # Retourne le nombre de millisecondes entre chaque "tick" de l'horloge
         screen.fill(BLACK)  # remplis l'écran avec une couleur de fond
+        for souffle in player.liste_souffle:
+            souffle.move()
+        player.liste_souffle.draw(screen)
 
         for event in pygame.event.get(): # Boucle gérant les évènements entrés par l'utilisateur (ex : déplacer la souris, appuyer sur une touche...)
             if event.type == pygame.QUIT:
@@ -301,6 +313,8 @@ def main():
                     player.go_left()
                 elif event.key == pygame.K_d:
                     player.go_right()
+                elif event.key == pygame.K_u:
+                    player.souffle()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_z or event.key == pygame.K_s:
                     player.stop_y()
@@ -328,7 +342,6 @@ def main():
             current_level = level_list[level_courant]
             player.rect.x = 300
             player.rect.y = 300
-            active_sprite_list = pygame.sprite.Group()
             player.level = current_level
 
         screen.blit(player.image, player.rect)

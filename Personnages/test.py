@@ -1,32 +1,26 @@
 import pygame
+successes, failures = pygame.init() # Initialisation des modules de pygame
+print("{0} successes and {1} failures".format(successes, failures))
+from Objets.objets import *
 
-# Global constants
-
-# Colors
+# Définition de couleurs constantes en RVB
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-# Screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+#Dimensions de l'écran
+SCREEN_WIDTH = 1024
+SCREEN_HEIGTH = 728
 
-
+#classe du joueur
 class Player(pygame.sprite.Sprite):
-    """ This class represents the bar at the bottom that the player
-        controls. """
 
-    # -- Methods
     def __init__(self):
-        """ Constructor function """
 
-        # Call the parent's constructor
         super().__init__()
 
-        # Create an image of the block, and fill it with a color.
-        # This could also be an image loaded from the disk.
         width = 40
         height = 60
         self.image = pygame.Surface([width, height])
