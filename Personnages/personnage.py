@@ -221,54 +221,15 @@ class Level_01(Level):
         # Appelle le constructeur du parent
         Level.__init__(self, player)
 
+        self.nbMielNeed = 1
+
         player.rect.x = 300
         player.rect.y = 300
-        self.nbMielNeed = 1
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
                  [100, 330, 400, 398],
                  [50, 728, 0, 0],
-                 [735, 50, 0, 0],
-                 [244, 50, 780, 0],
-                 [1024, 50, 0, 678],
-                 [50, 728, 974, 0],
-                 ]
-
-        # parcours la liste ci-dessus et ajoute les murs
-        for wall in level:
-            block = Wall(wall[0], wall[1])
-            block.rect.x = wall[2]
-            block.rect.y = wall[3]
-            block.player = self.player
-            self.wall_list.add(block)
-
-        ventilo = Ventilateur(player)
-        ventilo.rect.x = 600
-        ventilo.rect.y = 300
-
-        miel = Miel()
-        miel.rect.x = 800
-        miel.rect.y = 610
-
-        self.props_list.add_internal(ventilo)
-        self.props_list.add_internal(miel)
-
-class Level_02(Level):
-
-    def __init__(self, player):
-
-        # Appelle le constructeur du parent
-        Level.__init__(self, player)
-
-        player.rect.x = 300
-        player.rect.y = 300
-        self.nbMielNeed = 2
-
-        # liste contenant width, height, x, and y des murs
-        level = [[100, 330, 400, 0],
-                 [100, 330, 400, 398],
-                 [50, 728, 100, 0],
                  [735, 50, 0, 0],
                  [244, 50, 780, 0],
                  [1024, 50, 0, 678],
@@ -284,14 +245,57 @@ class Level_02(Level):
             self.wall_list.add(block)
 
         cahier = Cahier(player)
-        cahier.rect.x = 600
-        cahier.rect.y = 300
+        cahier.rect.x = 220
+        cahier.rect.y = 100
 
         miel = Miel()
-        miel.rect.x = 800
-        miel.rect.y = 610
+        miel.rect.x = 550
+        miel.rect.y = 180
 
         self.props_list.add_internal(cahier)
+        self.props_list.add_internal(miel)
+
+class Level_02(Level):
+
+    def __init__(self, player):
+
+        # Appelle le constructeur du parent
+        Level.__init__(self, player)
+
+        self.nbMielNeed = 2
+
+        # liste contenant width, height, x, and y des murs
+        level = [[50, 440, 0, 0],
+                 [50, 228, 0, 500],
+                 [820, 120, 0, 0],
+                 [700, 120, 0, 608],
+                 [264, 120, 760, 608],
+                 [60, 548, 640, 180],
+                 [260, 100, 640, 180],
+                 [50, 360, 300, 360],
+                 [180, 120, 300, 320],
+                 [200, 360, 760, 180],
+                 [250, 60, 0, 120],
+                 [500, 50, 0, 180],
+                 ]
+
+        # parcours la liste ci-dessus et ajoute les murs
+        for wall in level:
+            block = Wall(wall[0], wall[1])
+            block.rect.x = wall[2]
+            block.rect.y = wall[3]
+            block.player = self.player
+            self.wall_list.add(block)
+
+        eventail = Eventail(player)
+        eventail.rect.x = 620
+        eventail.rect.y = 470
+
+        miel = Miel()
+        miel.rect.x = 870
+        miel.rect.y = 60
+
+        self.props_list.add_internal(eventail)
         self.props_list.add_internal(miel)
 
 class Level_03(Level):
@@ -301,18 +305,17 @@ class Level_03(Level):
         # Appelle le constructeur du parent
         Level.__init__(self, player)
 
-        player.rect.x = 300
-        player.rect.y = 300
         self.nbMielNeed = 3
 
         # liste contenant width, height, x, and y des murs
-        level = [[100, 330, 400, 0],
-                 [100, 330, 400, 398],
-                 [50, 728, 0, 0],
-                 [735, 50, 0, 0],
-                 [244, 50, 780, 0],
-                 [1024, 50, 0, 678],
-                 [50, 728, 974, 0],
+        level = [[30, 440, 998, 0],
+                 [30, 228, 998, 500],
+                 [50, 500, 0, 0],
+                 [50, 168, 0, 560],
+                 [320, 60, 0, 0],
+                 [70, 620, 560, 0],
+                 [200, 60, 560, 250],
+                 [60, 370, 760, 250],
                  ]
 
         # parcours la liste ci-dessus et ajoute les murs
@@ -323,15 +326,10 @@ class Level_03(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = Ventilateur(player)
-        ventilo.rect.x = 600
-        ventilo.rect.y = 300
-
         miel = Miel()
-        miel.rect.x = 800
-        miel.rect.y = 610
+        miel.rect.x = 400
+        miel.rect.y = 40
 
-        self.props_list.add_internal(ventilo)
         self.props_list.add_internal(miel)
 
 class Level_04(Level):
@@ -341,18 +339,13 @@ class Level_04(Level):
         # Appelle le constructeur du parent
         Level.__init__(self, player)
 
-        player.rect.x = 300
-        player.rect.y = 300
         self.nbMielNeed = 4
 
         # liste contenant width, height, x, and y des murs
-        level = [[100, 330, 400, 0],
-                 [100, 330, 400, 398],
-                 [50, 728, 100, 0],
-                 [735, 50, 0, 0],
-                 [244, 50, 780, 0],
+        level = [[482, 50, 0, 0],
+                 [482, 50, 542, 0],
+                 [724, 478, 150, 125],
                  [1024, 50, 0, 678],
-                 [50, 728, 974, 0],
                  ]
 
         # parcours la liste ci-dessus et ajoute les murs
@@ -363,15 +356,15 @@ class Level_04(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = Ventilateur(player)
-        ventilo.rect.x = 600
-        ventilo.rect.y = 300
+        cahier = Cahier(player)
+        cahier.rect.x = 512
+        cahier.rect.y = 628
 
         miel = Miel()
-        miel.rect.x = 800
-        miel.rect.y = 610
+        miel.rect.x = 60
+        miel.rect.y = 60
 
-        self.props_list.add_internal(ventilo)
+        self.props_list.add_internal(cahier)
         self.props_list.add_internal(miel)
 
 class Level_05(Level):
@@ -381,18 +374,23 @@ class Level_05(Level):
         # Appelle le constructeur du parent
         Level.__init__(self, player)
 
-        player.rect.x = 300
-        player.rect.y = 300
         self.nbMielNeed = 5
 
         # liste contenant width, height, x, and y des murs
-        level = [[100, 330, 400, 0],
-                 [100, 330, 400, 398],
-                 [50, 728, 0, 0],
-                 [735, 50, 0, 0],
+        level = [[482, 50, 0, 678],
+                 [482, 50, 542, 678],
+                 [700, 50, 0, 0],
+                 [264, 50, 760, 0],
                  [244, 50, 780, 0],
-                 [1024, 50, 0, 678],
-                 [50, 728, 974, 0],
+                 [80, 280, 402, 448],
+                 [450, 60, 402, 448],
+                 [60, 280, 602, 228],
+                 [880, 30, 144, 110],
+                 [264, 110, 760, 0],
+                 [50, 370, 94, 110],
+                 [200, 150, 330, 228],
+                 [180, 370, 94, 228],
+                 [40, 280, 890, 140],
                  ]
 
         # parcours la liste ci-dessus et ajoute les murs
@@ -404,12 +402,12 @@ class Level_05(Level):
             self.wall_list.add(block)
 
         ventilo = Ventilateur(player)
-        ventilo.rect.x = 600
+        ventilo.rect.x = 300
         ventilo.rect.y = 300
 
         miel = Miel()
-        miel.rect.x = 800
-        miel.rect.y = 610
+        miel.rect.x = 970
+        miel.rect.y = 460
 
         self.props_list.add_internal(ventilo)
         self.props_list.add_internal(miel)
@@ -421,18 +419,18 @@ class Level_06(Level):
         # Appelle le constructeur du parent
         Level.__init__(self, player)
 
-        player.rect.x = 300
-        player.rect.y = 300
         self.nbMielNeed = 6
 
         # liste contenant width, height, x, and y des murs
-        level = [[100, 330, 400, 0],
-                 [100, 330, 400, 398],
-                 [50, 728, 100, 0],
-                 [735, 50, 0, 0],
+        level = [[370, 50, 0, 678],
+                 [594, 50, 430, 678],
+                 [50, 510, 974, 0],
+                 [50, 158, 974, 570],
                  [244, 50, 780, 0],
-                 [1024, 50, 0, 678],
-                 [50, 728, 974, 0],
+                 [70, 580, 780, 148],
+                 [50, 150, 430, 578],
+                 [280, 50, 150, 578],
+                 [300, 340, 500, 180],
                  ]
 
         # parcours la liste ci-dessus et ajoute les murs
@@ -443,15 +441,20 @@ class Level_06(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = Ventilateur(player)
-        ventilo.rect.x = 600
-        ventilo.rect.y = 300
+        soin = Soin()
+        soin.rect.x = 550
+        soin.rect.y = 650
+
+        eventail = Eventail(player)
+        eventail.rect.x = 480
+        eventail.rect.y = 380
 
         miel = Miel()
-        miel.rect.x = 800
-        miel.rect.y = 610
+        miel.rect.x = 910
+        miel.rect.y = 630
 
-        self.props_list.add_internal(ventilo)
+        self.props_list.add_internal(soin)
+        self.props_list.add_internal(eventail)
         self.props_list.add_internal(miel)
 
 class Level_07(Level):
@@ -706,14 +709,60 @@ def main():
             player.rect.y = 0
 
         #détection fin de niveau
-        if player.rect.y == 0 and player.nbMiel == current_level.nbMielNeed:
-            level_courant += 1
-            current_level = level_list[level_courant]
-            player.rect.x = 300
-            player.rect.y = 300
-            player.level = current_level
-            # changement du nom de la fenetre
-            pygame.display.set_caption("Air bee 'n bees - Level " + str(level_courant + 1))
+        if level_courant == 0:
+            if player.rect.y == 0 and player.nbMiel == current_level.nbMielNeed:
+                level_courant += 1
+                current_level = level_list[level_courant]
+                player.rect.x = 710
+                player.rect.y = 696
+                player.level = current_level
+                # changement du nom de la fenetre
+                pygame.display.set_caption("Air bee 'n bees - Level " + str(level_courant + 1))
+        elif level_courant == 1:
+            if player.rect.x == 0 and player.nbMiel == current_level.nbMielNeed:
+                level_courant += 1
+                current_level = level_list[level_courant]
+                player.rect.x = 992
+                player.rect.y = 455
+                player.level = current_level
+                # changement du nom de la fenetre
+                pygame.display.set_caption("Air bee 'n bees - Level " + str(level_courant + 1))
+        elif level_courant == 2:
+            if player.rect.x == 0 and player.nbMiel == current_level.nbMielNeed:
+                level_courant += 1
+                current_level = level_list[level_courant]
+                player.rect.x = 992
+                player.rect.y = 348
+                player.level = current_level
+                # changement du nom de la fenetre
+                pygame.display.set_caption("Air bee 'n bees - Level " + str(level_courant + 1))
+        elif level_courant == 3:
+            if player.rect.y == 0 and player.nbMiel == current_level.nbMielNeed:
+                level_courant += 1
+                current_level = level_list[level_courant]
+                player.rect.x = 498
+                player.rect.y = 696
+                player.level = current_level
+                # changement du nom de la fenetre
+                pygame.display.set_caption("Air bee 'n bees - Level " + str(level_courant + 1))
+        elif level_courant == 4:
+            if player.rect.y == 0 and player.nbMiel == current_level.nbMielNeed:
+                level_courant += 1
+                current_level = level_list[level_courant]
+                player.rect.x = 384
+                player.rect.y = 696
+                player.level = current_level
+                # changement du nom de la fenetre
+                pygame.display.set_caption("Air bee 'n bees - Level " + str(level_courant + 1))
+        elif level_courant == 5:
+            if player.rect.x == 992 and player.nbMiel == current_level.nbMielNeed:
+                level_courant += 1
+                current_level = level_list[level_courant]
+                player.rect.x = 300
+                player.rect.y = 300
+                player.level = current_level
+                # changement du nom de la fenetre
+                pygame.display.set_caption("Air bee 'n bees - Level " + str(level_courant + 1))
 
         screen.blit(player.image, player.rect)
         current_level.draw(screen)
