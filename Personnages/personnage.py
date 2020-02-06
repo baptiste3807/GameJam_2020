@@ -167,6 +167,8 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
             self.nbMiel += 1;
         elif object.nom == "soin" and self.pointdevie < 3:
             self.pointdevie += 1
+        elif object.nom == "soin" and self.pointdevie == 3:
+            self.pointdevie = 3
         else :
             self.inventaire.insert(0, object)
             if len(self.inventaire) > 2:
