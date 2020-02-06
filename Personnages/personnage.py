@@ -28,7 +28,9 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         self.direction = "droite"
         self.liste_souffle = pygame.sprite.Group()
         self.inventaire = []
+        self.main_droite = pygame.sprite.Group()
         self.nbMiel = 0
+        self.objet_souffle = pygame.sprite.Group()
 
     def update(self):
         #déplacement droite/gauche
@@ -57,7 +59,7 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
         object_hit_list = pygame.sprite.spritecollide(self, self.level.props_list, False)
         for block in object_hit_list:
             if self.change_x > 0 or self.change_x < 0 or self.change_y > 0 or self.change_y < 0:
-                if len(self.inventaire) < 2 or block.nom[4:7]=="miel":
+                if len(self.inventaire) < 1 or block.nom == "miel" or block.nom == "soin":
                     self.Ramasse(block)
                     self.contenu()
                     block.rect.x = 10000
@@ -95,6 +97,27 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
     # utilisation de l'air
     def souffle(self):
         self.liste_souffle.add_internal(Souffle(self))
+
+    def obj1(self):
+        if len(self.inventaire) > 0:
+            if self.inventaire[0].nom == "ventilateur":
+                self.main_droite.add_internal(Ventilateur(self))
+                if self.inventaire[0].nb_util > 1:
+                    self.inventaire[0].nb_util -= 1
+                else :
+                    del self.inventaire[0]
+            elif self.inventaire[0].nom == "cahier":
+                self.main_droite.add_internal(Cahier(self))
+                if self.inventaire[0].nb_util > 1:
+                    self.inventaire[0].nb_util -= 1
+                else :
+                    del self.inventaire[0]
+            elif self.inventaire[0].nom == "eventail":
+                self.main_droite.add_internal(Eventail(self))
+                if self.inventaire[0].nb_util > 1:
+                    self.inventaire[0].nb_util -= 1
+                else :
+                    del self.inventaire[0]
 
     #changement de l'état de santé suite a une piqûre
     def Empoisonnement(self):
@@ -140,23 +163,23 @@ class Player(pygame.sprite.Sprite): # Création d'une classe pour maintenir les 
 
     #permet de ramasser un objet passé en paramètres
     def Ramasse(self, object):
-        self.inventaire.insert(0, object)
-        if len(self.inventaire) > 2:
-            if object.nom[4:7] == "miel":
-                if self.inventaire[0].nom[4:7] == "miel":
-                    self.nbMiel += 1
-                    self.inventaire[0].nom == str(self.nbMiel) + "x miel"
-                elif self.inventaire[1].nom[4:7] == "miel":
-                    self.nbMiel += 1
-                    self.inventaire[1].nom == str(self.nbMiel) + "x miel"
-
-            self.inventaire.pop(2)
+        if object.nom == "miel":
+            self.nbMiel += 1;
+        elif object.nom == "soin" and self.pointdevie < 3:
+            self.pointdevie += 1
+        else :
+            self.inventaire.insert(0, object)
+            if len(self.inventaire) > 2:
+                self.inventaire.pop(2)
 
     #affiche tout ce que l'inventaire du joueur contient
     def contenu(self):
         print("L'inventaire contient : \n")
         for obj in self.inventaire:
             print(obj.nom)
+        print("Vous avez ")
+        print(self.nbMiel)
+        print(" pots de miel")
 
 
 #classe des murs invisibles
@@ -176,6 +199,7 @@ class Level(object):
         self.wall_list = pygame.sprite.Group()
         self.props_list = pygame.sprite.Group()
         self.player = player
+        self.nbMielNeed = 0
 
     # Met a jour tous les composants du niveau
     def update(self):
@@ -199,6 +223,7 @@ class Level_01(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 1
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -218,7 +243,7 @@ class Level_01(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
+        ventilo = Ventilateur(player)
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
@@ -238,6 +263,7 @@ class Level_02(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 2
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -257,15 +283,15 @@ class Level_02(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
-        ventilo.rect.x = 600
-        ventilo.rect.y = 300
+        cahier = Cahier(player)
+        cahier.rect.x = 600
+        cahier.rect.y = 300
 
         miel = Miel()
         miel.rect.x = 800
         miel.rect.y = 610
 
-        self.props_list.add_internal(ventilo)
+        self.props_list.add_internal(cahier)
         self.props_list.add_internal(miel)
 
 class Level_03(Level):
@@ -277,6 +303,7 @@ class Level_03(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 3
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -296,7 +323,7 @@ class Level_03(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
+        ventilo = Ventilateur(player)
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
@@ -316,6 +343,7 @@ class Level_04(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 4
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -335,7 +363,7 @@ class Level_04(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
+        ventilo = Ventilateur(player)
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
@@ -355,6 +383,7 @@ class Level_05(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 5
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -374,7 +403,7 @@ class Level_05(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
+        ventilo = Ventilateur(player)
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
@@ -394,6 +423,7 @@ class Level_06(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 6
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -413,7 +443,7 @@ class Level_06(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
+        ventilo = Ventilateur(player)
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
@@ -433,6 +463,7 @@ class Level_07(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 7
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -452,7 +483,7 @@ class Level_07(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
+        ventilo = Ventilateur(player)
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
@@ -472,6 +503,7 @@ class Level_08(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 8
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -491,7 +523,7 @@ class Level_08(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
+        ventilo = Ventilateur(player)
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
@@ -511,6 +543,7 @@ class Level_09(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 9
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -530,7 +563,7 @@ class Level_09(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
+        ventilo = Ventilateur(player)
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
@@ -550,6 +583,7 @@ class Level_10(Level):
 
         player.rect.x = 300
         player.rect.y = 300
+        self.nbMielNeed = 10
 
         # liste contenant width, height, x, and y des murs
         level = [[100, 330, 400, 0],
@@ -569,7 +603,7 @@ class Level_10(Level):
             block.player = self.player
             self.wall_list.add(block)
 
-        ventilo = ventilateur()
+        ventilo = Ventilateur(player)
         ventilo.rect.x = 600
         ventilo.rect.y = 300
 
@@ -630,6 +664,10 @@ def main():
             souffle.move()
         player.liste_souffle.draw(screen)
 
+        for object in player.main_droite:
+            object.move()
+        player.main_droite.draw(screen)
+
         for event in pygame.event.get(): # Boucle gérant les évènements entrés par l'utilisateur (ex : déplacer la souris, appuyer sur une touche...)
             if event.type == pygame.QUIT:
                 running = False
@@ -644,6 +682,8 @@ def main():
                     player.go_right()
                 elif event.key == pygame.K_k:
                     player.souffle()
+                elif event.key == pygame.K_l:
+                    player.obj1()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     player.stop_y()
@@ -666,7 +706,7 @@ def main():
             player.rect.y = 0
 
         #détection fin de niveau
-        if player.rect.y == 0:
+        if player.rect.y == 0 and player.nbMiel == current_level.nbMielNeed:
             level_courant += 1
             current_level = level_list[level_courant]
             player.rect.x = 300

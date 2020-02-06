@@ -2,6 +2,10 @@ import pygame
 
 GREEN = (0, 255, 0)
 YELLOW = (255, 255, 0)
+BLUE = (0, 0, 255)
+PURPLE = (102,0,153)
+ORANGE = (237,127,16)
+RED = (255, 0, 0)
 
 class Souffle(pygame.sprite.Sprite):
     def __init__(self, player):
@@ -45,7 +49,7 @@ class Cahier(pygame.sprite.Sprite):
     def __init__(self, player):
         self.nom = "cahier"
         self.image = pygame.Surface([10,10])
-        #self.image.fill(GREEN)
+        self.image.fill(PURPLE)
         self.rect = self.image.get_rect()
         self.nb_util = 3
         self.velocity = 5
@@ -57,7 +61,7 @@ class Cahier(pygame.sprite.Sprite):
         self.direction = player.direction
 
     def remove(self):
-        self.player.inventaire.remove_internal(self)
+        self.player.main_droite.remove_internal(self)
 
     def move(self):
         if self.direction == "bas":
@@ -80,7 +84,7 @@ class Eventail(pygame.sprite.Sprite):
     def __init__(self, player):
         self.nom = "eventail"
         self.image = pygame.Surface([10,10])
-        #self.image.fill(GREEN)
+        self.image.fill(ORANGE)
         self.rect = self.image.get_rect()
         self.nb_util = 2
         self.velocity = 5
@@ -92,7 +96,7 @@ class Eventail(pygame.sprite.Sprite):
         self.direction = player.direction
 
     def remove(self):
-        self.player.inventaire.remove_internal(self)
+        self.player.main_droite.remove_internal(self)
 
     def move(self):
         if self.direction == "bas":
@@ -125,9 +129,13 @@ class Ventilateur(pygame.sprite.Sprite):
         self.y_initial = player.rect.y
         self.player = player
         self.direction = player.direction
+        if self.direction == "bas":
+            self.rect.y = player.rect.y+32
+        elif self.direction == "droite":
+            self.rect.x = player.rect.x+32
 
     def remove(self):
-        self.player.inventaire.remove_internal(self)
+        self.player.main_droite.remove_internal(self)
 
     def move(self):
         if self.direction == "bas":
@@ -148,7 +156,14 @@ class Ventilateur(pygame.sprite.Sprite):
 
 class Miel(pygame.sprite.Sprite):
     def __init__(self):
-        self.nom = "0x miel"
+        self.nom = "miel"
         self.image = pygame.Surface((10,10))
         self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+
+class Soin(pygame.sprite.Sprite):
+    def __init__(self):
+        self.nom = "soin"
+        self.image = pygame.Surface((10,10))
+        self.image.fill(RED)
         self.rect = self.image.get_rect()
