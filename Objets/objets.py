@@ -70,7 +70,7 @@ class ventilateur(pygame.sprite.Sprite):
 
 class Miel(pygame.sprite.Sprite):
     def __init__(self):
-        self.nom = "miel"
+        self.nom = "0x miel"
         self.image = pygame.Surface((10,10))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
